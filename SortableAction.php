@@ -29,25 +29,29 @@ class SortableAction extends Action {
      */
     public $startPosition = 0;
 
-    public function init(){
+    public function init()
+    {
         parent::init();
-        if(!isset($this->activeRecordClassName)){
+
+        if (!isset($this->activeRecordClassName)){
             throw new InvalidConfigException("You must specify the activeRecordClassName");
         }
 
-        if(!isset($this->orderColumn)){
+        if (!isset($this->orderColumn)){
             throw new InvalidConfigException("You must specify the orderColumn");
         }
     }
-    public function run(){
-        if(!\Yii::$app->request->isAjax){
+
+    public function run()
+    {
+        if (!\Yii::$app->request->isAjax) {
             throw new HttpException(404);
         }
+
         if (isset($_POST['items']) && is_array($_POST['items'])) {
             $activeRecordClassName = $this->activeRecordClassName;
-            foreach ($_POST['items'] as $i=>$item) {
+            foreach ($_POST['items'] as $i => $item) {
                 $page = $activeRecordClassName::findOne($item);
-                //$page = $activeRecordClassName::find()->where($item);
                 $page->updateAttributes([
                     $this->orderColumn => $i + $this->startPosition,
                 ]);

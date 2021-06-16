@@ -42,10 +42,18 @@ class SortableGridView extends GridView {
      */
     public $moveItem = '';
 
-    public function init(){
+    /**
+     * (optional) The flag that allows you to disable the alert box when sorting started
+     *
+     * @var bool
+     */
+    public $noModal = false;
+
+    public function init()
+    {
         parent::init();
 
-        if(!isset($this->sortUrl)){
+        if(!isset($this->sortUrl)) {
             throw new InvalidConfigException("You must specify the sortUrl");
         }
 
@@ -73,17 +81,19 @@ class SortableGridView extends GridView {
             $options = $this->rowOptions;
         }
 
-        // $options['id'] = "items[]_{$model->primaryKey}";
         $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }
 
-    public function run(){
-        foreach($this->columns as $column){
-			if(property_exists($column, 'enableSorting'))
-				$column->enableSorting = false;
+    public function run()
+    {
+        foreach ($this->columns as $column) {
+            if (property_exists($column, 'enableSorting')) {
+                $column->enableSorting = false;
+            }
         }
+
         parent::run();
 
         $options = [
@@ -92,6 +102,7 @@ class SortableGridView extends GridView {
             'sortingPromptText' => $this->sortingPromptText,
             'sortingFailText' => $this->failText,
             'moveItem' => $this->moveItem,
+            'noModal' => $this->noModal,
             'csrfTokenName' => \Yii::$app->request->csrfParam,
             'csrfToken' => \Yii::$app->request->csrfToken,
         ];
